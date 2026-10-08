@@ -5,7 +5,7 @@ from skillforge.validator import validate_frontmatter
 
 def test_validate_frontmatter_valid():
     """Test validation of valid frontmatter."""
-    data = {"name": "test", "description": "A test skill"}
+    data = {"name": "hello", "description": "world"}
     errors = validate_frontmatter(data)
     assert errors == []
 

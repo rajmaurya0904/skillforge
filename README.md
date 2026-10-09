@@ -18,7 +18,23 @@ pip install -e ".[dev]"
 
 ## Usage
 
-TODO: fill in as the build loop lands the core feature.
+Run the CLI from a terminal:
+
+```bash
+skillforge
+```
+
+Or invoke it as a module:
+
+```bash
+python -m skillforge.cli
+```
+
+Show the help text:
+
+```bash
+skillforge --help
+```
 
 ## Example
 

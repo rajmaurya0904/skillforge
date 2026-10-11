@@ -26,3 +26,19 @@ def test_cli_valid_skill_directory() -> None:
     )
     assert result.returncode == 0
     assert "Valid skill" in result.stdout
+
+
+def test_cli_invalid_skill_directory(tmp_path) -> None:
+    """A skill missing its required 'name' field exits 1 and reports the error."""
+    (tmp_path / "SKILL.md").write_text(
+        "---\ndescription: Has no name field.\n---\n# Bad\n",
+        encoding="utf-8",
+    )
+    result = subprocess.run(
+        [sys.executable, "-m", "skillforge.cli", str(tmp_path)],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 1
+    assert "Invalid skill" in result.stdout
+    assert "Missing 'name' in frontmatter" in result.stdout

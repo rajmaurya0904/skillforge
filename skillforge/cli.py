@@ -1,4 +1,5 @@
 import argparse
+import json
 import sys
 
 from skillforge import __version__
@@ -14,10 +15,20 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="skillforge")
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("--verbose", action="store_true", help="print parsed frontmatter")
+    parser.add_argument(
+        "--format",
+        choices=["text", "json"],
+        default="text",
+        help="output format (default: text)",
+    )
     parser.add_argument("skill_dir", help="directory containing the skill's SKILL.md")
     args = parser.parse_args(argv)
 
     result = validate_skill(args.skill_dir)
+    if args.format == "json":
+        print(json.dumps(result, indent=2))
+        return 0 if result["valid"] else 1
+
     if args.verbose:
         print("Parsed frontmatter:")
         for key, value in (result["frontmatter"] or {}).items():

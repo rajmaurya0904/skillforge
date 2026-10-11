@@ -13,6 +13,7 @@ skillforge = "skillforge.cli:main"
 dev = [
     "pytest>=8.0",
     "ruff>=0.6",
+    "mypy>=1.10",
 ]
 
 [build-system]
@@ -24,6 +25,9 @@ include = ["skillforge*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.11"
 
 [tool.ruff]
 line-length = 100

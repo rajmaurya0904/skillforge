@@ -18,22 +18,25 @@ pip install -e ".[dev]"
 
 ## Usage
 
-Run the CLI from a terminal:
+Validate a skill by passing the directory that contains its SKILL.md:
 
 ```bash
-skillforge
+skillforge path/to/my-skill
 ```
+
+The command exits with code 0 if the skill is valid and 1 otherwise.
 
 Or invoke it as a module:
 
 ```bash
-python -m skillforge.cli
+python -m skillforge.cli path/to/my-skill
 ```
 
-Show the help text:
+Show the help text or the version:
 
 ```bash
 skillforge --help
+skillforge --version
 ```
 
 ## Example

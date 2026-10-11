@@ -1,7 +1,28 @@
-"""Validator for SKILL.md frontmatter."""
+"""Validator for SKILL.md frontmatter.
+
+The frontmatter contract is deliberate and small:
+
+Required keys -- validation fails without them:
+    name: the skill's identifier.
+    description: the text a model reads to decide whether to select the skill.
+
+Optional keys -- absence is fine, but a present key must be a non-empty string:
+    files: comma-separated paths (relative to the skill directory) that must exist.
+    triggers: comma-separated sample prompts run against the skill.
+
+Any other key is accepted and ignored, so a skill can carry metadata that a
+particular directory or runtime needs without failing validation here.
+"""
+
+#: Keys every SKILL.md must declare as a non-empty string.
+REQUIRED_KEYS = ("name", "description")
+
+#: Keys that may be omitted, but must be a non-empty string when present.
+OPTIONAL_KEYS = ("files", "triggers")
+
 
 def validate_frontmatter(data):
-    """Validate frontmatter data.
+    """Validate frontmatter data against the key contract above.
 
     Args:
         data (dict or None): Parsed frontmatter data.
@@ -18,17 +39,23 @@ def validate_frontmatter(data):
         errors.append("Frontmatter must be a dictionary")
         return errors
 
-    # Validate required fields
-    required = {
-        "name": "string",
-        "description": "string",
-    }
-    for field, _expected_type in required.items():
+    for field in REQUIRED_KEYS:
         if field not in data:
             errors.append(f"Missing '{field}' in frontmatter")
-        elif not isinstance(data[field], str):
-            errors.append(f"'{field}' must be a string")
-        elif not data[field].strip():
-            errors.append(f"'{field}' must not be empty")
+        else:
+            errors.extend(_check_non_empty_string(field, data[field]))
+
+    for field in OPTIONAL_KEYS:
+        if field in data:
+            errors.extend(_check_non_empty_string(field, data[field]))
 
     return errors
+
+
+def _check_non_empty_string(field, value):
+    """Return the errors for a key that must hold a non-empty string."""
+    if not isinstance(value, str):
+        return [f"'{field}' must be a string"]
+    if not value.strip():
+        return [f"'{field}' must not be empty"]
+    return []

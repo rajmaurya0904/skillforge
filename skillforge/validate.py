@@ -3,9 +3,13 @@
 Ties together frontmatter parsing, frontmatter validation, referenced-file
 checks, and sample trigger prompts for a single skill directory.
 
-Optional frontmatter keys read by this module:
+'name' and 'description' are required; skillforge.validator holds the full
+frontmatter key contract. The optional keys acted on by this module are:
     files: comma-separated paths (relative to the skill directory) that must exist.
     triggers: comma-separated sample prompts to run against the skill.
+
+Both checks are skipped when the key is absent. When a key is present it must
+be a non-empty string, which skillforge.validator enforces.
 """
 
 import os

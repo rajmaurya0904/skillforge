@@ -39,6 +39,20 @@ skillforge --help
 skillforge --version
 ```
 
+## Frontmatter keys
+
+| Key | Required? | Checked |
+| --- | --- | --- |
+| `name` | required | present, a non-empty string |
+| `description` | required | present, a non-empty string |
+| `files` | optional | when present: non-empty, and every comma-separated path exists relative to the skill directory |
+| `triggers` | optional | when present: non-empty, and each comma-separated prompt is run as a sample trigger |
+
+Omitting `files` or `triggers` is valid and skips that check. Including either
+one with an empty value is an error, not a silent no-op. Any key outside this
+table is accepted and ignored, so a skill can carry metadata that a particular
+directory or runtime needs.
+
 ## Examples
 
 ### Validating a skill

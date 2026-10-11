@@ -20,3 +20,14 @@ def test_validate_skill_missing_skill_md(tmp_path) -> None:
     result = validate_skill(str(tmp_path))
     assert result["valid"] is False
     assert any("SKILL.md not found" in error for error in result["errors"])
+
+
+def test_validate_skill_invalid_yaml(tmp_path) -> None:
+    """Malformed frontmatter (a key line with no colon) fails validation."""
+    (tmp_path / "SKILL.md").write_text(
+        "---\nname: broken-skill\ndescription\n---\n# Broken\n",
+        encoding="utf-8",
+    )
+    result = validate_skill(str(tmp_path))
+    assert result["valid"] is False
+    assert "Missing 'description' in frontmatter" in result["errors"]

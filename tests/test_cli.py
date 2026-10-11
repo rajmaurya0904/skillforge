@@ -3,8 +3,11 @@
 import os
 import subprocess
 import sys
+import tomllib
+from pathlib import Path
 
 GOOD_SKILL = os.path.join(os.path.dirname(__file__), "fixtures", "good_skill")
+PYPROJECT = Path(__file__).resolve().parent.parent / "pyproject.toml"
 
 
 def test_cli_help() -> None:
@@ -15,6 +18,18 @@ def test_cli_help() -> None:
     )
     assert result.returncode == 0
     assert "usage: skillforge" in result.stdout
+
+
+def test_cli_version_flag() -> None:
+    """--version exits 0 and prints the version declared in pyproject.toml."""
+    expected = tomllib.loads(PYPROJECT.read_text(encoding="utf-8"))["project"]["version"]
+    result = subprocess.run(
+        [sys.executable, "-m", "skillforge.cli", "--version"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0
+    assert expected in result.stdout
 
 
 def test_cli_valid_skill_directory() -> None:

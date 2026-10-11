@@ -13,10 +13,15 @@ def main(argv: list[str] | None = None) -> int:
     """
     parser = argparse.ArgumentParser(prog="skillforge")
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
+    parser.add_argument("--verbose", action="store_true", help="print parsed frontmatter")
     parser.add_argument("skill_dir", help="directory containing the skill's SKILL.md")
     args = parser.parse_args(argv)
 
     result = validate_skill(args.skill_dir)
+    if args.verbose:
+        print("Parsed frontmatter:")
+        for key, value in (result["frontmatter"] or {}).items():
+            print(f"  {key}: {value}")
     if result["valid"]:
         print(f"Valid skill: {args.skill_dir}")
         return 0

@@ -7,6 +7,7 @@ import tomllib
 from pathlib import Path
 
 GOOD_SKILL = os.path.join(os.path.dirname(__file__), "fixtures", "good_skill")
+BROKEN_SKILL = os.path.join(os.path.dirname(__file__), "fixtures", "broken_skill")
 PYPROJECT = Path(__file__).resolve().parent.parent / "pyproject.toml"
 
 
@@ -57,3 +58,20 @@ def test_cli_invalid_skill_directory(tmp_path) -> None:
     assert result.returncode == 1
     assert "Invalid skill" in result.stdout
     assert "Missing 'name' in frontmatter" in result.stdout
+
+def test_cli_exit_codes_on_fixtures() -> None:
+    """The CLI exits 0 on the good fixture and 1 on the deliberately broken one."""
+    good = subprocess.run(
+        [sys.executable, "-m", "skillforge.cli", GOOD_SKILL],
+        capture_output=True,
+        text=True,
+    )
+    broken = subprocess.run(
+        [sys.executable, "-m", "skillforge.cli", BROKEN_SKILL],
+        capture_output=True,
+        text=True,
+    )
+    assert good.returncode == 0
+    assert broken.returncode == 1
+    assert "Missing 'description' in frontmatter" in broken.stdout
+    assert "Referenced file not found: template.csv" in broken.stdout

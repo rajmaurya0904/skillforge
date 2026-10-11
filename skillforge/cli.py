@@ -1,6 +1,7 @@
 import argparse
 import sys
 
+from skillforge import __version__
 from skillforge.validate import validate_skill
 
 
@@ -11,6 +12,7 @@ def main(argv: list[str] | None = None) -> int:
         0 if the skill is valid, 1 otherwise.
     """
     parser = argparse.ArgumentParser(prog="skillforge")
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("skill_dir", help="directory containing the skill's SKILL.md")
     args = parser.parse_args(argv)
 

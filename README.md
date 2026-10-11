@@ -39,9 +39,69 @@ skillforge --help
 skillforge --version
 ```
 
-## Example
+## Examples
 
-TODO.
+### Validating a skill
+
+Given a skill directory with this `SKILL.md`:
+
+```yaml
+---
+name: csv-helper
+description: Converts CSV files into tables.
+files: examples.md, template.csv
+triggers: convert this csv, make a table from my data
+---
+```
+
+The optional `files` key lists paths (relative to the skill directory) that must exist. The optional `triggers` key lists sample prompts to run against the skill.
+
+Run the CLI on the directory:
+
+```bash
+skillforge path/to/csv-helper
+```
+
+If `examples.md` exists but `template.csv` does not, the output is:
+
+```text
+Invalid skill: path/to/csv-helper
+  - Referenced file not found: template.csv
+```
+
+The exit code is `1`. Create the missing file and run the command again to get:
+
+```text
+Valid skill: path/to/csv-helper
+```
+
+with exit code `0`.
+
+### Interpreting the output
+
+- `Valid skill:` means every check passed and the exit code is `0`.
+- `Invalid skill:` means at least one check failed. Each following line starts with `-` and names one problem, such as a missing `name` or a referenced file that does not exist.
+- `--verbose` prints the parsed frontmatter before the result, which helps when a key is not being picked up.
+- `--format json` prints the same result as JSON with `valid`, `errors`, and `frontmatter` fields, which is useful in scripts and CI:
+
+```bash
+skillforge --format json path/to/csv-helper
+```
+
+```json
+{
+  "valid": false,
+  "errors": [
+    "Referenced file not found: examples.md",
+    "Referenced file not found: template.csv"
+  ],
+  "frontmatter": {
+    "name": "csv-helper",
+    "description": "Converts CSV files into tables.",
+    "files": "examples.md, template.csv"
+  }
+}
+```
 
 ## FAQ
 
